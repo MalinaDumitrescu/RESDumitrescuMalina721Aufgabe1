@@ -10,13 +10,18 @@ public class Controller {
     public Controller(List<Log> logEntries) {
         this.logEntries = logEntries;
     }
-    //todo vezi tipul de fisier citire scriere si clasa, enum, tip de logparser
 
-    //todo stop commit only a- the reading from file before methods
+    /**
+     * Returns a list of unique ninja names with power points above a given threshold.
+     */
+    public List<String> getNinjasAbovePowerThreshold(double minPower) {
+        return logEntries.stream()
+                .filter(log -> log.getKraftpunkte() > minPower)
+                .map(Log::getCharaktername)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
-    //todo stop commit b
-
-    //todo stop commit c
 
     //todo stop commit d
 }

@@ -22,13 +22,16 @@ public class ConsoleView {
         while (true) {
             System.out.println();
             System.out.println("Press:");
+            System.out.println("1. Show all ninjas with power points above a given threshold");
             //todo add prints for each option
             System.out.println("4. Exit");
             System.out.print("Please enter your choice: ");
             String input = scanner.nextLine();
 
             switch (input) {
-
+                case "1":
+                    displayNinjasAboveThreshold();
+                    break;
                 //todo add case for each option
                 case "4":
                     System.out.println("Exiting the application. Goodbye!");
@@ -38,5 +41,29 @@ public class ConsoleView {
             }
         }
 
+    }
+
+    private void displayNinjasAboveThreshold() {
+        System.out.print("Enter minimum power points: ");
+        double minPower = scanner.nextDouble();
+        scanner.nextLine(); // Consume newline
+
+        List<String> ninjas = controller.getNinjasAbovePowerThreshold(minPower);
+        if (ninjas.isEmpty()) {
+            System.out.println("No ninjas found above the power threshold.");
+        } else {
+            System.out.println("Ninjas with power points above " + minPower + ":");
+            ninjas.forEach(System.out::println);
+        }
+    }
+
+    private void displayJoninEvents() {
+        List<String> events = controller.getJoninEventsSortedByDate();
+        if (events.isEmpty()) {
+            System.out.println("No events found for rank Jonin.");
+        } else {
+            System.out.println("Jonin events sorted by date:");
+            events.forEach(System.out::println);
+        }
     }
 }
