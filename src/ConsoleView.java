@@ -24,7 +24,7 @@ public class ConsoleView {
             System.out.println("Press:");
             System.out.println("1. Show all ninjas with power points above a given threshold");
             System.out.println("2. Show all Jonin events sorted by date");
-            //todo add prints for each option
+            System.out.println("3. Write total number of events per ninja rank to file");
             System.out.println("4. Exit");
             System.out.print("Please enter your choice: ");
             String input = scanner.nextLine();
@@ -36,6 +36,10 @@ public class ConsoleView {
                 case "2":
                     displayJoninEvents();
                     break;
+                case "3":
+                    writeStufeStatsToFile();
+                    break;
+
                 //todo add case for each option
                 case "4":
                     System.out.println("Exiting the application. Goodbye!");
@@ -70,4 +74,14 @@ public class ConsoleView {
             events.forEach(System.out::println);
         }
     }
+
+    private void writeStufeStatsToFile() {
+        try {
+            controller.writeStufeStatsToFile("gesammtzahl.txt");
+            System.out.println("Statistics written to gesammtzahl.txt successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
 }

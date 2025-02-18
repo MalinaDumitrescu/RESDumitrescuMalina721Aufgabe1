@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 public class Controller {
 
     private final List<Log> logEntries;
+
     public Controller(List<Log> logEntries) {
         this.logEntries = logEntries;
     }
@@ -32,5 +33,49 @@ public class Controller {
                 .map(log -> log.getDatum() + ": " + log.getCharaktername() + " - " + log.getBeschreibung())
                 .collect(Collectors.toList());
     }
-    //todo stop commit d
+
+    /**
+     * Writes the total number of events per ninja rank (Stufe) to "gesammtzahl.txt".
+     * Format: Stufe%AnzahlEreignisse#Gesamtpunkte
+     */
+    public void writeStufeStatsToFile(String filePath) throws IOException {
+        // Count number of events per rank and sum power points
+        Map<Stufe, Long> eventCounts = logEntries.stream()
+                .collect(Collectors.groupingBy(Log::getStufe, Collectors.counting()));
+
+        Map<Stufe, Double> totalPowerPoints = logEntries.stream()
+                .collect(Collectors.groupingBy(Log::getStufe, Collectors.summingDouble(Log::getKraftpunkte)));
+
+        // Create a list for sorting
+        List<String> sortedResults = eventCounts.entrySet().stream()
+                .map(entry -> {
+                    Stufe stufe = entry.getKey();
+                    long count = entry.getValue();
+                    double totalPower = totalPowerPoints.getOrDefault(stufe, 0.0);
+                    return stufe + "%" + count + "#" + String.format("%.2f", totalPower);
+                })
+                .sorted((a, b) -> {
+                    String[] partsA = a.split("%|#");
+                    String[] partsB = b.split("%|#");
+
+                    int countA = Integer.parseInt(partsA[1]);
+                    int countB = Integer.parseInt(partsB[1]);
+                    double powerA = Double.parseDouble(partsA[2]);
+                    double powerB = Double.parseDouble(partsB[2]);
+
+                    // Sort descending by event count, if tie then ascending by power
+                    if (countA == countB) {
+                        return Double.compare(powerA, powerB);
+                    }
+                    return Integer.compare(countB, countA);
+                })
+                .collect(Collectors.toList());
+
+        // Write to file
+        try (FileWriter writer = new FileWriter(filePath)) {
+            for (String line : sortedResults) {
+                writer.write(line + "\n");
+            }
+        }
+    }
 }
