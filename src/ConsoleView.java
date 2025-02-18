@@ -14,7 +14,7 @@ public class ConsoleView {
     //todo change file format this.parser = new XMLLogParser(); ////// this.logEntries = parser.parse("src/logs/avengers.txt"); // Parse logs //    private XMLLogParser parser;
     public ConsoleView() throws IOException {
         this.parser = new XMLLogParser(); // Initialize parser
-        this.logEntries = parser.parse("src/logs/evenimente.xml"); // Parse logs
+        this.logEntries = parser.parse("src/evenimente.xml"); // Parse logs
         this.controller = new Controller(logEntries); // Initialize controller with logs
     }
 
@@ -23,6 +23,7 @@ public class ConsoleView {
             System.out.println();
             System.out.println("Press:");
             System.out.println("1. Show all ninjas with power points above a given threshold");
+            System.out.println("2. Show all Jonin events sorted by date");
             //todo add prints for each option
             System.out.println("4. Exit");
             System.out.print("Please enter your choice: ");
@@ -31,6 +32,9 @@ public class ConsoleView {
             switch (input) {
                 case "1":
                     displayNinjasAboveThreshold();
+                    break;
+                case "2":
+                    displayJoninEvents();
                     break;
                 //todo add case for each option
                 case "4":

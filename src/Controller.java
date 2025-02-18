@@ -22,6 +22,15 @@ public class Controller {
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Returns a list of all events for rank "Jonin" sorted in descending order by date.
+     */
+    public List<String> getJoninEventsSortedByDate() {
+        return logEntries.stream()
+                .filter(log -> log.getStufe() == Stufe.JONIN)
+                .sorted((log1, log2) -> log2.getDatum().compareTo(log1.getDatum()))
+                .map(log -> log.getDatum() + ": " + log.getCharaktername() + " - " + log.getBeschreibung())
+                .collect(Collectors.toList());
+    }
     //todo stop commit d
 }
