@@ -39,7 +39,6 @@ public class Controller {
      * Format: Stufe%AnzahlEreignisse#Gesamtpunkte
      */
     public void writeStufeStatsToFile(String filePath) throws IOException {
-        // Count number of events per rank and sum power points
         Map<Stufe, Long> eventCounts = logEntries.stream()
                 .collect(Collectors.groupingBy(Log::getStufe, Collectors.counting()));
 
@@ -52,22 +51,22 @@ public class Controller {
                     Stufe stufe = entry.getKey();
                     long count = entry.getValue();
                     double totalPower = totalPowerPoints.getOrDefault(stufe, 0.0);
-                    return stufe + "%" + count + "#" + String.format("%.2f", totalPower);
+                    return stufe + "%" + count + "#" + String.format("%.2f", totalPower).replace(",", "\".");
                 })
+                //todo modificat aici in loc de int, parsez long
                 .sorted((a, b) -> {
-                    String[] partsA = a.split("%|#");
-                    String[] partsB = b.split("%|#");
+                    String[] partsA = a.split("[%#]");
+                    String[] partsB = b.split("[%#]");
+//counting() returns a long after that we convert to
+                    long countA = Long.parseLong(partsA[1]);
+                    long countB = Long.parseLong(partsB[1]);
+                    double powerA = Double.parseDouble(partsA[2].replace("\".", "."));
+                    double powerB = Double.parseDouble(partsB[2].replace("\".", "."));
 
-                    int countA = Integer.parseInt(partsA[1]);
-                    int countB = Integer.parseInt(partsB[1]);
-                    double powerA = Double.parseDouble(partsA[2]);
-                    double powerB = Double.parseDouble(partsB[2]);
-
-                    // Sort descending by event count, if tie then ascending by power
                     if (countA == countB) {
                         return Double.compare(powerA, powerB);
                     }
-                    return Integer.compare(countB, countA);
+                    return Long.compare(countB, countA);
                 })
                 .collect(Collectors.toList());
 
